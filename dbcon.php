@@ -8,7 +8,7 @@
 
     try {
         $con = new PDO("mysql:host={$host};dbname={$dbname};charset=utf8",$username, $password);
-    } catch(PDOException $e) {
+    } catch(PDOException $e) {//dfdsfds
         die("Failed to connect to the database: " . $e->getMessage());
     }
 
