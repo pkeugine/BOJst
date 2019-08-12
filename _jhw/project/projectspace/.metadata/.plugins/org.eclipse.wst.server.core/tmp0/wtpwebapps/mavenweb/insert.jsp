@@ -1,5 +1,5 @@
-<%@page import="kr.or.connect.review.Rev"%>
-<%@page import="kr.or.connect.review.RevDAO"%>
+<%@ page import="kr.or.connect.review.Rev"%>
+<%@ page import="kr.or.connect.review.RevDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     

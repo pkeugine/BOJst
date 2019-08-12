@@ -38,6 +38,16 @@
         <version>3.1.0</version>
         <scope>provided</scope>
     </dependency>
+	<dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>1.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -57,6 +67,20 @@
                 <target>1.8</target>
             </configuration>
         </plugin>
+        <plugin>
+    		<groupId>org.apache.tomcat.maven</groupId>
+    		<artifactId>tomcat7-maven-plugin</artifactId>
+    		<version>2.1</version>
+    		<configuration>
+	        	<!-- Path -->
+        		<path>/mavenweb</path>
+        		<!-- 구동중인 톰캣의 주소 + /manager/text -->
+        		<url>http://localhost:8000/manager/text</url>
+        		<!-- 톰캣 사용자 정보 -->
+        		<username>tomcat</username>
+        		<password>tomcat</password>
+    		</configuration>
+		</plugin>
     </plugins>
   </build>
 </project>
