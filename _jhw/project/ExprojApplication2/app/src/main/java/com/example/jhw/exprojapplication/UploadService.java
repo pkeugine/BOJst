@@ -13,7 +13,9 @@ public interface UploadService {
     @Multipart
     @POST("imageUpload.jsp")
     Call<ResponseBody> uploadFile(
-            @Part("description")RequestBody description,
+            @Part("userId")RequestBody userId,
+            @Part("grade")RequestBody grade,
+            @Part("opinion")RequestBody opinion,
             @Part MultipartBody.Part file);
 
 }

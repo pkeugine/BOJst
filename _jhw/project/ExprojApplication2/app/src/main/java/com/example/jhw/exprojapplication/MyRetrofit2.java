@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MyRetrofit2 {
 
-    public static final String URL = "http://10.20.31.248:8000/mavenweb/";
+    public static final String URL = "http://172.30.1.38:8000/mavenweb/";
 
     static Retrofit mRetrofit;
 

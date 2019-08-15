@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,12 +38,14 @@ import retrofit2.Response;
 
 public class ReviewAddActivity extends AppCompatActivity {
 
-    private EditText userId;
-    private EditText opinion;
+    private EditText userIdEdit;
+    private EditText opinionEdit;
     private Button addReivew;
     private Button addImg;
     private String url;
     private TextView tv_message;
+    private RatingBar ratingBar;
+
 
 
 
@@ -70,7 +73,15 @@ public class ReviewAddActivity extends AppCompatActivity {
         verifyStoragePermissions(this);
 
 
-
+        ratingBar = findViewById(R.id.ratingBar2);
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                if(ratingBar.getRating()<1.0f) {
+                    ratingBar.setRating(1);
+                }
+            }
+        });
         tv_message = (TextView)findViewById(R.id.tv);
         addImg = findViewById(R.id.addImg);
         addImg.setOnClickListener(new View.OnClickListener() {
@@ -100,8 +111,8 @@ public class ReviewAddActivity extends AppCompatActivity {
             }
         });*/
 
-        userId = findViewById(R.id.userId);
-        opinion = findViewById(R.id.opinion);
+        userIdEdit = findViewById(R.id.userId);
+        opinionEdit = findViewById(R.id.opinion);
         addReivew = findViewById(R.id.addReview);
 
 
@@ -189,9 +200,12 @@ public class ReviewAddActivity extends AppCompatActivity {
     public void uploadImage(Uri uri) {
         UploadService service = MyRetrofit2.getRetrofit2().create(UploadService.class);
         MultipartBody.Part body1 = prepareFilePart("image", uri);
-        RequestBody description = createPartFromString("hello, this is description speaking");
 
-        Call<ResponseBody> call = service.uploadFile(description, body1);
+        RequestBody userId = createPartFromString(userIdEdit.getText().toString());
+        RequestBody grade = createPartFromString(String.valueOf((int)ratingBar.getRating()));
+        RequestBody opinion = createPartFromString(opinionEdit.getText().toString());
+
+        Call<ResponseBody> call = service.uploadFile(userId,grade,opinion,body1);
         tv_message.setText(call.request().url().toString()); //todo 디버깅용
 
         call.enqueue(new Callback<ResponseBody>() {
