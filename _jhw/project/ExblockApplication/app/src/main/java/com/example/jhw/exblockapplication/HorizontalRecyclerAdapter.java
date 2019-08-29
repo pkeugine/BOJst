@@ -15,13 +15,13 @@ import java.util.ArrayList;
  * Created by Jeffrey Liu on 3/21/16.
  */
 public class HorizontalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private ArrayList<Integer> mList;
+    private ArrayList<String> mList;
     private OnItemClickListener mItemClickListener;
 
     public HorizontalRecyclerAdapter() {
     }
 
-    public void updateList(ArrayList<Integer> list) {
+    public void updateList(ArrayList<String> list) {
         this.mList = list;
         notifyDataSetChanged();
     }

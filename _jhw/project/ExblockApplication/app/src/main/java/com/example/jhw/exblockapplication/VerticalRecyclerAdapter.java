@@ -2,6 +2,7 @@ package com.example.jhw.exblockapplication;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import static com.example.jhw.exblockapplication.MainActivity.subList;
-
 
 public class VerticalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<ArrayList<Integer>> mList;
+    private ArrayList<ArrayList<String>> mList;
     private SparseIntArray listPosition = new SparseIntArray();
     private HorizontalRecyclerAdapter.OnItemClickListener mItemClickListener;
     private Context mContext;
     private RecyclerView.RecycledViewPool viewPool;
     private OnClickListener mClickListener;
 
-    public VerticalRecyclerAdapter(ArrayList<ArrayList<Integer>> list) {
+    public VerticalRecyclerAdapter(ArrayList<ArrayList<String>> list) {
         this.mList = list;
         viewPool = new RecyclerView.RecycledViewPool();
     }
@@ -35,14 +34,15 @@ public class VerticalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         private HorizontalRecyclerAdapter adapter;
         private LinearLayoutManager layoutManager;
 
-        private Button mButton;
-
+        private Button addButton;
+        private Button delButton;
 
         public CellViewHolder(View itemView) {
             super(itemView);
 
 
-            mButton = itemView.findViewById(R.id.add);
+            addButton = itemView.findViewById(R.id.add);
+            delButton = itemView.findViewById(R.id.del);
             mRecyclerView = itemView.findViewById(R.id.recyclerView);
             mRecyclerView.setRecycledViewPool(viewPool);
 
@@ -58,15 +58,17 @@ public class VerticalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
 
             // this is needed if you are working with CollapsingToolbarLayout, I am adding this here just in case I forget.
+
             mRecyclerView.setNestedScrollingEnabled(false);
 
             //optional
             StartSnapHelper snapHelper = new StartSnapHelper();
             snapHelper.attachToRecyclerView(mRecyclerView);
-            mButton.setOnClickListener(this);
+            addButton.setOnClickListener(this);
+            delButton.setOnClickListener(this);
         }
 
-        public void setData(ArrayList<Integer> list) {
+        public void setData(ArrayList<String> list) {
             adapter.updateList(list);
         }
 
@@ -91,22 +93,29 @@ public class VerticalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, final int position) {
+
         switch (viewHolder.getItemViewType()) {
+
             default: {
                 CellViewHolder cellViewHolder = (CellViewHolder) viewHolder;
-
                 cellViewHolder.setData(mList.get(position));
+              /*  Log.d("!!!", "onItemClick: "+position);
+                if(position==0) {
+                //    cellViewHolder.mRecyclerView.setVisibility(View.GONE);
+                    Log.d("???", "onItemClick: "+position);
+                    cellViewHolder.delButton.setVisibility(View.GONE);
+                }*/
 
-                int lastSeenFirstPosition = listPosition.get(position, 0);
+                /*int lastSeenFirstPosition = listPosition.get(position, 0);
                 if (lastSeenFirstPosition >= 0) {
                     cellViewHolder.layoutManager.scrollToPositionWithOffset(lastSeenFirstPosition, 0);
-                }
+                }*/
                 break;
             }
         }
     }
 
-    @Override
+   /* @Override
     public void onViewRecycled(RecyclerView.ViewHolder viewHolder) {
         final int position = viewHolder.getAdapterPosition();
         CellViewHolder cellViewHolder = (CellViewHolder) viewHolder;
@@ -114,7 +123,7 @@ public class VerticalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         listPosition.put(position, firstVisiblePosition);
 
         super.onViewRecycled(viewHolder);
-    }
+    }*/
 
 
     @Override

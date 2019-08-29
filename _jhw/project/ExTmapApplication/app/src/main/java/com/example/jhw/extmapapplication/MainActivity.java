@@ -2,6 +2,7 @@ package com.example.jhw.extmapapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -26,8 +27,11 @@ public class MainActivity extends AppCompatActivity {
     private WebSettings mWebSettings; //웹뷰세팅
     private Button carButton;
     private Button walkButton;
-    private final Handler handler = new Handler();
+    private Button carsButton;
+    private Button nextButton;
 
+    private final Handler handler = new Handler();
+/*
     private class AndroidBridge {
         @JavascriptInterface
         public void setDeviceInfo(final String arg) { // must be final
@@ -38,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 웹뷰 시작
         mWebView = (WebView) findViewById(R.id.webView);
-        mWebView.addJavascriptInterface(new AndroidBridge(), "MyApp");
+        //mWebView.addJavascriptInterface(new AndroidBridge(), "MyApp");
         mWebView.setWebViewClient(new WebViewClient()); // 클릭시 새창 안뜨게
         mWebSettings = mWebView.getSettings(); //세부 세팅 등록
         mWebSettings.setJavaScriptEnabled(true); // 웹페이지 자바스클비트 허용 여부
@@ -67,8 +71,27 @@ public class MainActivity extends AppCompatActivity {
         mWebSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);//.SINGLE_COLUMN);//.SINGLE_COLUMN); // 컨텐츠 사이즈 맞추기
         mWebSettings.setCacheMode(WebSettings.LOAD_NO_CACHE); // 브라우저 캐시 허용 여부
         mWebSettings.setDomStorageEnabled(true); // 로컬저장소 허용 여부
-        // mWebSettings.setAllowUniversalAccessFromFileURLs(true);
+        mWebSettings.setAllowUniversalAccessFromFileURLs(true);
         mWebView.loadUrl("file:///android_asset/www/tmap.html"); // 웹뷰에 표시할 웹사이트 주소, 웹뷰 시작
+
+
+        nextButton = findViewById(R.id.next);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(),Main2Activity.class);
+                startActivity(intent);
+            }
+        });
+
+        carsButton = findViewById(R.id.change);
+        carsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mWebView.loadUrl("javascript:msgback('" + 126.9850380932383 + "','" + 37.566567545861645 +
+                        "','" + 127.10331814639885 + "','" + 37.403049076341794 + "')");
+            }
+        });
         carButton = findViewById(R.id.car);
         carButton.setOnClickListener(new View.OnClickListener() {
             @Override
