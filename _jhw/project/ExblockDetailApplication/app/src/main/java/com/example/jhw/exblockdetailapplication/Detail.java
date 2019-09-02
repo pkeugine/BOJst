@@ -115,6 +115,9 @@ public class Detail {
         };
 
     }
-    public PoiDetailInfo getPoiDetailInfo() {return poiDetailInfo;}
+
+    public PoiDetailInfo getPoiDetailInfo() {
+        return poiDetailInfo;
+    }
 
 }

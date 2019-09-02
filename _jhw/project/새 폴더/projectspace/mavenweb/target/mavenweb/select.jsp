@@ -10,9 +10,10 @@
 	//request.setCharacterEncoding("UTF-8");
 	//String place = request.getParameter("deptno");
 
+	int placeId = Integer.parseInt(request.getParameter("placeId"));
 	
 	RevDAO dao = RevDAO.getInstance();
-	List<Rev> list = dao.getRevs();
+	List<Rev> list = dao.getRevs(placeId);
 
 	ObjectMapper objectMapper = new ObjectMapper();
 

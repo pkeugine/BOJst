@@ -10,13 +10,14 @@
 	request.setCharacterEncoding("UTF-8");
 
 	String place = "맥도날드";
+	int placeId = 4707024;
 	String userId = request.getParameter("userId");
 	int grade = Integer.parseInt(request.getParameter("grade"));
 	String opinion = request.getParameter("opinion");
 
 	
 	RevDAO dao = RevDAO.getInstance();
-	Rev rev = new Rev(place,userId,grade,opinion);
+	Rev rev = new Rev(place,userId,placeId,grade,opinion);
 	dao.addRev(rev);
 
 %>
