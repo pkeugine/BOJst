@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Eoyeoga_PlaceBlock</string>
+    <string name="treview">리뷰 : 423개</string>
+    <string name="tprice">가격 : 5만원 대 (2인)</string>
+    <string name="tstar">별점 : ★★★★ (4점)</string>
+    <string name="tname">서울식당</string>
+    <string name="deletebtn">deleteBtn</string>
+    <string name="addbtn">addBtn</string>
+</resources>
