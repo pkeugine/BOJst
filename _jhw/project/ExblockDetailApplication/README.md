@@ -3,6 +3,7 @@
 ### AndroidManifest
 - 타이틀바 제거
 - http 접속 허용
+- gps 권한 허용  
 - TmapKey 정보 [strings.xml에도 추가]
 
 ### Gradle
@@ -29,3 +30,5 @@
 - MainActivity `상세 정보 액티비티`
   - retrofit2 콜백 함수를 이용해 tmap api, db 통신
   - 추출한 결과 값으로 뷰 완성, 경로 탐색
+- GpsTracker `GPS 관련 액티비티`
+  - gps 권한을 이용하여 디바이스 현재 위치 좌표 추출
