@@ -6,4 +6,20 @@
 - ExpoiApplication `위치 기반 주변 POI 검색`
 - ExprojApplication2 `리뷰 리스트`
 - ExTmapApplication `Tmap 경로 탐색`
-- 새폴더 `기타`
+- projectspace `서버 통신 관련`
+
+
+
+
+
+---
+> ### 2019.09.08 (일) _수정 사항_
+- ExblockDetailApplication
+  - 현재 위치 표시 기능 추가
+  - 불필요 import 제거
+  - Parcelable(직렬화) 기능 제거 [ 현재 불필요 ]
+- 새폴더 제거
+  - ExprojApplication(리뷰리스트 수정전) 제거
+  - projectspace 밖으로 이동
+- projectspace
+  - 불필요 jsp 파일 제거 (index.jsp 제외)
