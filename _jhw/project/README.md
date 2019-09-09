@@ -18,6 +18,8 @@
   - 현재 위치 표시 기능 추가
   - 불필요 import 제거
   - Parcelable(직렬화) 기능 제거 [ 현재 불필요 ]
+- ExblockApplication
+  - 불필요한 DetailActivity 제거
 - 새폴더 제거
   - ExprojApplication(리뷰리스트 수정전) 제거
   - projectspace 밖으로 이동
