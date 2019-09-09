@@ -1,5 +1,3 @@
-# Description
-
 > ## Activity 
 #### MainActivity `액타블록 액티비티` 
 - 리사이클러뷰에 레이아웃 매니저 지정 
