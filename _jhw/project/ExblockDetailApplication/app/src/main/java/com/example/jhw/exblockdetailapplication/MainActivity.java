@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,18 +16,23 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.skt.Tmap.TMapData;
+import com.skt.Tmap.TMapInfo;
 import com.skt.Tmap.TMapMarkerItem;
 import com.skt.Tmap.TMapPoint;
 import com.skt.Tmap.TMapPolyLine;
 import com.skt.Tmap.TMapView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.skt.Tmap.TMapData.*;
@@ -75,9 +81,48 @@ public class MainActivity extends BaseActivity {
     Button moreReviews;
 
     @OnClick(R.id.title_back)
-    public void back(View view) {
+    public void back() {
         onBackPressed();
     }
+
+
+    @OnClick(R.id.path_search)
+    public void pathSearch() {
+        Intent intent = new Intent(MainActivity.this, PathSearchActivity.class);
+        intent.putExtra("endLat", placeLat);
+        intent.putExtra("endLon", placeLon);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.current_pos)
+    public void current() {
+        ArrayList<TMapPoint> arrays = new ArrayList<>();
+        arrays.add(myPoint);
+        arrays.add(placePoint);
+        TMapInfo info = tMapView.getDisplayTMapInfo(arrays);
+        Log.d("result", "info : "+info.getTMapZoomLevel()+","+tMapView.getZoomLevel());
+        tMapView.setZoomLevel(info.getTMapZoomLevel());
+     /*   double leftLon = Math.min(gpsTracker.getLongitude(),placeLon);
+        double leftLat = Math.min(gpsTracker.getLatitude(),placeLat);
+        double rightLon = Math.max(gpsTracker.getLongitude(),placeLon);
+        double rightLat = Math.max(gpsTracker.getLatitude(),placeLat);
+       //
+        tMapView.zoomToTMapPoint(new TMapPoint(leftLat,leftLon),new TMapPoint(leftLat,leftLon));
+        int first = tMapView.getZoomLevel();
+        if(first<=tMapView.getZoomLevel()) {
+            tMapView.MapZoomOut();
+        }*/
+      // tMapView.setZoomLevel(tMapView.getZoomLevel()-1);
+      /* // tMapView.zoomToSpan(Math.abs(gpsTracker.getLatitude()-placeLat), Math.abs(gpsTracker.getLongitude()-placeLon));
+        Log.d("result", "current: "+leftLon+", "+leftLat);
+        Log.d("result", "curren2: "+rightLon+", "+rightLat);
+//        Log.d("result", "current2: "+gpsTracker.getLatitude()+", "+placeLat);
+        Log.d("result", "current3: "+Math.abs(gpsTracker.getLatitude()-placeLat)+", "+Math.abs(gpsTracker.getLongitude()-placeLon));
+*/
+
+        tMapView.setCenterPoint(gpsTracker.getLongitude(), gpsTracker.getLatitude());
+    }
+
 
     private GpsTracker gpsTracker;
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
@@ -86,20 +131,27 @@ public class MainActivity extends BaseActivity {
 
     private TMapView tMapView;
     private TMapPoint myPoint;
+    private TMapPoint placePoint;
+
     private TMapPoint tMapPointStart;
     private TMapPoint tMapPointEnd;
     private TMapData tmapData;
-    private TMapMarkerItem tMarker;
+
+    private TMapMarkerItem placeMarker;
+    private TMapMarkerItem myMarker;
 
     private String TmapapiKey;
     private String poiId;
     private double startLat;
     private double startLon;
-    private double endLat;
-    private double endLon;
+
+    private double placeLat;
+    private double placeLon;
     private Detail.PoiDetailInfo detail;
     private Review review;
     private int responseCount;
+    private View rootView;
+    private LayoutInflater layoutInflater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,10 +176,11 @@ public class MainActivity extends BaseActivity {
 
     // 상세정보, 리뷰 정보 받아오기 ( 네트워크 통신 )
     private void getData() {
-        responseCount=0;
+        responseCount = 0;
         getDetails();
         getReviews();
     }
+
     // 상세정보 받아오기
     private void getDetails() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -136,18 +189,19 @@ public class MainActivity extends BaseActivity {
                 .build();
 
         RetrofitExService retrofitExService = retrofit.create(RetrofitExService.class);
-        Call<Detail> call = retrofitExService.getData(poiId,1,TmapapiKey);
-        Log.d("pppath : ",call.request().url().toString()+"");
+        Call<Detail> call = retrofitExService.getData(poiId, 1, TmapapiKey);
+        Log.d("pppath : ", call.request().url().toString() + "");
         call.enqueue(new Callback<Detail>() {
             @Override
             public void onResponse(@NonNull Call<Detail> call, @NonNull Response<Detail> response) {
                 if (response.isSuccessful()) {
-                    Log.d("getData unfail", "==============================count"+responseCount);
+                    Log.d("getData unfail", "==============================count" + responseCount);
                     detail = response.body().getPoiDetailInfo();
-                    if(responseCount>=1) init();
+                    if (responseCount >= 1) init();
                     else responseCount++;
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<Detail> call, @NonNull Throwable t) {
                 Log.e("getData fail", "======================================");
@@ -163,25 +217,26 @@ public class MainActivity extends BaseActivity {
                 .build();
 
         RetrofitExService retrofitExService = retrofit.create(RetrofitExService.class);
-        Call<List<Review>> call = retrofitExService.useDB("select.jsp",Integer.parseInt(poiId));
-        Log.d("pppath : ",call.request().url().toString()+"");
+        Call<List<Review>> call = retrofitExService.useDB("select.jsp", Integer.parseInt(poiId));
+        Log.d("pppath : ", call.request().url().toString() + "");
         call.enqueue(new Callback<List<Review>>() {
             @Override
             public void onResponse(@NonNull Call<List<Review>> call, @NonNull Response<List<Review>> response) {
                 if (response.isSuccessful()) {
                     List<Review> body = response.body();
-                    if(body != null) {
+                    if (body != null) {
                         review = body.get(0);
-                        Log.d("getData unfail", "==============================count"+responseCount);
-                        if(responseCount>=1) init();
+                        Log.d("getData unfail", "==============================count" + responseCount);
+                        if (responseCount >= 1) init();
                         else responseCount++;
                     }
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<List<Review>> call, @NonNull Throwable t) {
                 Log.e("getData fail", "======================================");
-                Log.d("fail : ",t.getMessage());
+                Log.d("fail : ", t.getMessage());
             }
         });
     }
@@ -190,75 +245,101 @@ public class MainActivity extends BaseActivity {
     private void init() {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        placeLat = detail.getLat();
+        placeLon = detail.getLon();
 
         tMapView = new TMapView(this);
         tMapView.setSKTMapApiKey(TmapapiKey);
-        linearLayoutTmap.addView(tMapView);
+        tMapView.setCenterPoint(placeLon, placeLat);
 
-        endLat = detail.getLat();
-        endLon = detail.getLon();
-        tmapData = new TMapData();
-        tMapPointStart = new TMapPoint(startLat, startLon); // SKT타워(출발지)
-        tMapPointEnd = new TMapPoint(endLat, endLon); // N서울타워(목적지)\
-        tMapView.setCenterPoint(endLon,endLat);
-        findPath();
+        placePoint = new TMapPoint(placeLat, placeLon);
+        placeMarker = new TMapMarkerItem();
+        placeMarker.setTMapPoint(placePoint);
+
+
+        //placeMarker.setName("현위치");
+      //  placeMarker.setVisible(TMapMarkerItem.VISIBLE);
+        //tMarker.setIcon(BitmapFactory.decodeResource(getResources(),R.drawable.map_pin_red));
+      //  placeMarker.setPosition((float) 0.5, 1);
+
+        placeMarker.setCanShowCallout(true);
+        placeMarker.setAutoCalloutVisible(true);
+        placeMarker.setCalloutTitle(detail.getName());
+
+        tMapView.addMarkerItem("placepos", placeMarker);
+
+        linearLayoutTmap.addView(tMapView);
+        //tmapData = new TMapData();
+        //tMapPointStart = new TMapPoint(startLat, startLon); // SKT타워(출발지)
+        //tMapPointEnd = new TMapPoint(endLat, endLon); // N서울타워(목적지)\
+
+//        ArrayList<TMapPoint> arrays = new ArrayList<>();
+//        arrays.add(tMapPointStart);
+//        arrays.add(tMapPointEnd);
+//        TMapInfo info = tMapView.getDisplayTMapInfo(arrays);
+        //tMapView.setCenterPoint(info.getTMapPoint().getLongitude(),info.getTMapPoint().getLatitude());
+
+        //tMapView.zoomToSpan(Math.abs(gpsTracker.getLatitude()-startLat), Math.abs(gpsTracker.getLongitude()-startLon));
+
+
+//        double leftLon = Math.min(endLon,startLon);
+//        double leftLat = Math.min(endLat,startLat);
+//        double rightLon = Math.max(endLon,startLon);
+//        double rightLat = Math.max(endLat,startLat);
+
+        //tMapView.zoomToTMapPoint(new TMapPoint(leftLat,leftLon),new TMapPoint(rightLat,rightLon));
+
+        //findPath(TMapPathType.PEDESTRIAN_PATH);
 
         // 현위치
         if (!checkLocationServicesStatus()) showDialogForLocationServiceSetting();
         else checkRunTimePermission();
         gpsTracker = new GpsTracker(MainActivity.this);
         myPoint = new TMapPoint(gpsTracker.getLatitude(), gpsTracker.getLongitude());
-        tMarker = new TMapMarkerItem();
-        tMarker.setTMapPoint(myPoint);
-        tMarker.setName("현위치");
-        tMarker.setVisible(TMapMarkerItem.VISIBLE);
-        tMarker.setIcon(BitmapFactory.decodeResource(getResources(),R.drawable.map_pin_red));
-        tMarker.setPosition((float) 0.5,1);
-        tMapView.addMarkerItem("mypos",tMarker);
+        myMarker = new TMapMarkerItem();
+        myMarker.setTMapPoint(myPoint);
+        myMarker.setName("현위치");
+        myMarker.setVisible(TMapMarkerItem.VISIBLE);
+        myMarker.setIcon(BitmapFactory.decodeResource(getResources(),R.drawable.i_location));
+        myMarker.setPosition((float) 0.5, 1);
+      //tMapView.setCenterPoint(gpsTracker.getLongitude(), gpsTracker.getLatitude());
+
+
+
+        tMapView.addMarkerItem("mypos", myMarker);
+
 
         textTitle.setText(detail.getName());
 
-        addressView.setText(detail.getAddress()+" 지번 : "+detail.getFirstNo()+"-"+detail.getSecondNo());
+        addressView.setText(detail.getAddress() + " 지번 : " + detail.getFirstNo() + "-" + detail.getSecondNo());
         telNoView.setText(detail.getTel());
 
-        if(detail.getParkFlag().equals("1")) parkFlagView.setText("가능");
-        else if(detail.getParkFlag().equals("0")) parkFlagView.setText("불가능");
+        if (detail.getParkFlag().equals("1")) parkFlagView.setText("가능");
+        else if (detail.getParkFlag().equals("0")) parkFlagView.setText("불가능");
         else {
             parkField.setVisibility(View.INVISIBLE);
             parkFlagView.setVisibility(View.INVISIBLE);
         }
 
-        if(!detail.getAdditionalInfo().equals("")) additionalInfoView.setText(detail.getAdditionalInfo());
+        if (!detail.getAdditionalInfo().equals(""))
+            additionalInfoView.setText(detail.getAdditionalInfo());
         else {
             additionalInfoView.setVisibility(View.INVISIBLE);
             additionalField.setVisibility(View.INVISIBLE);
         }
 
         descView.setMovementMethod(ScrollingMovementMethod.getInstance());
-        if(!detail.getDesc().equals("")) descView.setText(detail.getDesc());
+        if (!detail.getDesc().equals("")) descView.setText(detail.getDesc());
         else {
             descView.setVisibility(View.INVISIBLE);
             descField.setVisibility(View.INVISIBLE);
         }
 
         nickNameView.setText(review.getUserId());
-        pointView.setText(review.getGrade()+"");
+        pointView.setText(review.getGrade() + "");
         commentView.setText(review.getOpinion());
 
         cancelWaitingDialog();
-    }
-
-
-    // 경로 탐색
-    private void findPath() {
-        tmapData.findPathDataWithType(TMapPathType.PEDESTRIAN_PATH, tMapPointStart, tMapPointEnd,new FindPathDataListenerCallback() {
-            @Override
-            public void onFindPathData(TMapPolyLine polyLine) {
-                polyLine.setLineColor(Color.BLUE);
-                polyLine.setLineWidth(6);
-                tMapView.addTMapPath(polyLine);
-            }
-        });
     }
 
 
