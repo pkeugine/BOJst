@@ -14,8 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".PathSearchActivity"></activity>
-        <!-- TmapKey 정보 -->
+        <activity android:name=".RecordInfoActivity">
+
+        </activity>
+        <activity android:name=".PathSearchActivity" /> <!-- TmapKey 정보 -->
         <meta-data
             android:name="com.example.jhw.TmapKey"
             android:value="@string/tmap_api_key" />
@@ -27,7 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>

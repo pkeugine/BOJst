@@ -1,13 +1,11 @@
 package com.example.jhw.exblockdetailapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.skt.Tmap.TMapData;
@@ -43,16 +41,24 @@ public class PathSearchActivity extends BaseActivity {
     private double endLon;
     private TMapData.TMapPathType pathType;
     private TMapMarkerItem placeMarker;
+    private boolean stateFlag;
 
-    @OnClick(R.id.car_search)
-    public void car() {
-        pathType = TMapData.TMapPathType.CAR_PATH;
-        findPath(pathType);
-    }
-
-    @OnClick(R.id.walk_search)
-    public void walk() {
-        pathType = TMapData.TMapPathType.PEDESTRIAN_PATH;
+    @OnClick({R.id.car_search,R.id.walk_search})
+    void buttonEvents(View v) {
+        switch (v.getId()) {
+            case R.id.car_search:
+                if(stateFlag) return;
+                pathType = TMapData.TMapPathType.CAR_PATH;
+                stateFlag = true;
+                break;
+            case R.id.walk_search:
+                if(!stateFlag) return;
+                pathType = TMapData.TMapPathType.PEDESTRIAN_PATH;
+                stateFlag = false;
+                break;
+            default:
+                break;
+        }
         findPath(pathType);
     }
 
@@ -92,34 +98,28 @@ public class PathSearchActivity extends BaseActivity {
         placeMarker.setCanShowCallout(true);
         placeMarker.setPosition((float) 0.5, 1);
         placeMarker.setAutoCalloutVisible(true);
-        // placeMarker.setVisible(TMapMarkerItem.HIDDEN);
-        //placeMarker.setCalloutTitle("내용");
-        //placeMarker.setCalloutSubTitle("세부내용");
-        placeMarker.setAutoCalloutVisible(true);
         placeMarker.setIcon(BitmapFactory.decodeResource(getResources(), R.drawable.empty));
-        //tMapView.addMarkerItem("placepos", placeMarker);
-
 
         ArrayList<TMapPoint> arrays = new ArrayList<>();
-        arrays.add(tMapPointStart);
         arrays.add(tMapPointEnd);
+        arrays.add(tMapPointStart);
+
         TMapInfo info = tMapView.getDisplayTMapInfo(arrays);
         Log.d("result", "info : " + info.getTMapZoomLevel() + "," + tMapView.getZoomLevel());
         tMapView.setCenterPoint(info.getTMapPoint().getLongitude(), info.getTMapPoint().getLatitude());
-
+        tMapView.zoomToSpan(Math.abs(gpsTracker.getLatitude()-endLat), Math.abs(gpsTracker.getLongitude()-endLon));
     }
 
 
     // 경로 탐색
     private void findPath(TMapData.TMapPathType pathType) {
-
+        Log.d("result", "info : !!" + tMapView.getZoomLevel());
         tmapData.findPathDataWithType(pathType, tMapPointStart, tMapPointEnd, new TMapData.FindPathDataListenerCallback() {
             @Override
             public void onFindPathData(TMapPolyLine polyLine) {
                 polyLine.setLineColor(Color.BLUE);
                 polyLine.setLineWidth(6);
                 tMapView.addTMapPath(polyLine);
-
             }
         });
 
@@ -128,31 +128,25 @@ public class PathSearchActivity extends BaseActivity {
             public void onFindPathDataAll(Document document) {
                 Element root = document.getDocumentElement();
                 NodeList totaltime = root.getElementsByTagName("tmap:totalTime");
-
                 int time = Integer.parseInt(totaltime.item(0).getTextContent());
-                String sec = String.format("%02d", time % 60);
-                String min = String.format("%02d", (time / 60) % 60);
-                String hour = String.format("%02d", (time / 3600));
-                placeMarker.setCalloutTitle("예상 소요시간 "+hour + ":" + min + ":" + sec);
+
+                StringBuilder sb = new StringBuilder();
+                if(time/3600 > 0) sb.append(String.format("%d", (time / 3600))+"시간 ");
+                if((time / 60) % 60 > 0) sb.append(String.format("%d", (time / 60) % 60)+"분 ");
+                sb.append(String.format("%d", time % 60)+"초");
+
                 if(pathType== TMapData.TMapPathType.CAR_PATH) {
-                    placeMarker.setCalloutTitle("예상 소요시간 및 소요금액");
+                    placeMarker.setCalloutTitle("예상 소요시간 및 금액");
                     NodeList taxicost = root.getElementsByTagName("tmap:taxiFare");
-                    placeMarker.setCalloutSubTitle(hour + ":" + min + ":" + sec+" / " + taxicost.item(0).getTextContent().trim() + "원");
-                    
+                    sb.append(" / "+taxicost.item(0).getTextContent().trim() + "원");
                 } else {
                     placeMarker.setCalloutTitle("예상 소요시간");
-                    placeMarker.setCalloutSubTitle(hour + ":" + min + ":" + sec);
                 }
+                placeMarker.setCalloutSubTitle(sb.toString());
                 tMapView.removeAllMarkerItem();
                 tMapView.addMarkerItem("placepos", placeMarker);
-//
-//                timeText.setText(hour+":"+min+":"+sec);
-//
-//
-//                costText.setText(taxicost.item(0).getTextContent().trim()+"원");
             }
         });
-
     }
 
 }

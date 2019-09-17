@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffff"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".MainActivity">
+    tools:context=".RecordInfoActivity">
     <include
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -17,39 +16,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="7"
+        android:weightSum="8"
         android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp">
-        <LinearLayout
-            android:id="@+id/linearLayoutTmap"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_weight="3"
-            android:orientation="horizontal"
-            android:layout_marginTop="15dp"
-            android:padding="0dp"/>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <Button
-                android:id="@+id/path_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="경로탐색"/>
-            <Button
-                android:id="@+id/current_pos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/path_search"
-                android:text="내위치"/>
-        </RelativeLayout>
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="40dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:layout_marginTop="15dp">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -76,21 +51,6 @@
                     android:textSize="18dp"/>
                 <TextView
                     android:id="@+id/tel_no"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/park_field"
-                    android:layout_width="70dp"
-                    android:layout_height="wrap_content"
-                    android:text="주차 "
-                    android:textStyle="bold"
-                    android:textSize="18dp"/>
-                <TextView
-                    android:id="@+id/park_flag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>
@@ -130,38 +90,59 @@
                     android:maxLines="3"
                     android:scrollbars="vertical"/>
             </LinearLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="3"
-            android:layout_marginTop="15dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="리뷰"
-                android:textStyle="bold"
-                android:textSize="18dp"
-                android:layout_marginBottom="10dp"/>
-            <include layout="@layout/reviewlist_item"/>
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-                <Button
-                    android:id="@+id/add_review"
+                <TextView
+                    android:id="@+id/cost_field"
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="사용금액 "
+                    android:textStyle="bold"
+                    android:textSize="18dp"/>
+                <EditText
+                    android:id="@+id/cost"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="textEnd"
+                    android:inputType="number"
+                    android:singleLine="true" />
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="리뷰작성"/>
-                <Button
-                    android:id="@+id/more_reviews"
-                    android:layout_width="wrap_content"
+                    android:text="원 "
+                    android:textStyle="bold"
+                    android:textSize="18dp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/memo_field"
+                    android:layout_width="70dp"
                     android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/add_review"
-                    android:text="더보기"/>
-            </RelativeLayout>
+                    android:text="메모 "
+                    android:textStyle="bold"
+                    android:textSize="18dp"/>
+                <EditText
+                    android:id="@+id/memo"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:gravity="top"
+                    android:maxLines="5"/>
+            </LinearLayout>
+
+
         </LinearLayout>
+        <LinearLayout
+            android:id="@+id/linearLayoutTmap"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_weight="4"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:padding="0dp"/>
+
     </LinearLayout>
 
 </LinearLayout>

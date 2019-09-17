@@ -6,36 +6,28 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.skt.Tmap.TMapData;
 import com.skt.Tmap.TMapInfo;
 import com.skt.Tmap.TMapMarkerItem;
 import com.skt.Tmap.TMapPoint;
-import com.skt.Tmap.TMapPolyLine;
 import com.skt.Tmap.TMapView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.skt.Tmap.TMapData.*;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,12 +72,13 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.more_reviews)
     Button moreReviews;
 
+    // 뒤로가기 버튼
     @OnClick(R.id.title_back)
     public void back() {
         onBackPressed();
     }
 
-
+    // 경토 탐색 버튼
     @OnClick(R.id.path_search)
     public void pathSearch() {
         Intent intent = new Intent(MainActivity.this, PathSearchActivity.class);
@@ -94,6 +87,7 @@ public class MainActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    // 현 위치 버튼
     @OnClick(R.id.current_pos)
     public void current() {
         ArrayList<TMapPoint> arrays = new ArrayList<>();
@@ -102,24 +96,6 @@ public class MainActivity extends BaseActivity {
         TMapInfo info = tMapView.getDisplayTMapInfo(arrays);
         Log.d("result", "info : "+info.getTMapZoomLevel()+","+tMapView.getZoomLevel());
         tMapView.setZoomLevel(info.getTMapZoomLevel());
-     /*   double leftLon = Math.min(gpsTracker.getLongitude(),placeLon);
-        double leftLat = Math.min(gpsTracker.getLatitude(),placeLat);
-        double rightLon = Math.max(gpsTracker.getLongitude(),placeLon);
-        double rightLat = Math.max(gpsTracker.getLatitude(),placeLat);
-       //
-        tMapView.zoomToTMapPoint(new TMapPoint(leftLat,leftLon),new TMapPoint(leftLat,leftLon));
-        int first = tMapView.getZoomLevel();
-        if(first<=tMapView.getZoomLevel()) {
-            tMapView.MapZoomOut();
-        }*/
-      // tMapView.setZoomLevel(tMapView.getZoomLevel()-1);
-      /* // tMapView.zoomToSpan(Math.abs(gpsTracker.getLatitude()-placeLat), Math.abs(gpsTracker.getLongitude()-placeLon));
-        Log.d("result", "current: "+leftLon+", "+leftLat);
-        Log.d("result", "curren2: "+rightLon+", "+rightLat);
-//        Log.d("result", "current2: "+gpsTracker.getLatitude()+", "+placeLat);
-        Log.d("result", "current3: "+Math.abs(gpsTracker.getLatitude()-placeLat)+", "+Math.abs(gpsTracker.getLongitude()-placeLon));
-*/
-
         tMapView.setCenterPoint(gpsTracker.getLongitude(), gpsTracker.getLatitude());
     }
 
@@ -132,53 +108,45 @@ public class MainActivity extends BaseActivity {
     private TMapView tMapView;
     private TMapPoint myPoint;
     private TMapPoint placePoint;
-
-    private TMapPoint tMapPointStart;
-    private TMapPoint tMapPointEnd;
-    private TMapData tmapData;
-
     private TMapMarkerItem placeMarker;
     private TMapMarkerItem myMarker;
 
     private String TmapapiKey;
     private String poiId;
-    private double startLat;
-    private double startLon;
 
     private double placeLat;
     private double placeLon;
     private Detail.PoiDetailInfo detail;
     private Review review;
     private int responseCount;
-    private View rootView;
-    private LayoutInflater layoutInflater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
         TmapapiKey = getMetadata(this, "com.example.jhw.TmapKey");
         showWaitingDialog();
         // 이전 액티비티에서 넘어온 정보 받아오기
         Intent intent = this.getIntent();
         if (intent != null) {
-            double[] preloc = intent.getDoubleArrayExtra("preloc");
-            if (preloc != null && intent.getStringExtra("poiId") != null) {
-                startLat = preloc[0];
-                startLon = preloc[1];
+            if (intent.getStringExtra("poiId") != null) {
                 poiId = intent.getStringExtra("poiId");
             } else {
                 Log.e("getData error", "======================================");
                 onBackPressed();
             }
         }
+
         getData();
     }
 
     // 상세정보, 리뷰 정보 받아오기 ( 네트워크 통신 )
     private void getData() {
-        responseCount = 0;
+        responseCount = 1;
         getDetails();
-        getReviews();
+        //getReviews();
     }
 
     // 상세정보 받아오기
@@ -227,8 +195,12 @@ public class MainActivity extends BaseActivity {
                     if (body != null) {
                         review = body.get(0);
                         Log.d("getData unfail", "==============================count" + responseCount);
+                        nickNameView.setText(review.getUserId());
+                        pointView.setText(review.getGrade() + "");
+                        commentView.setText(review.getOpinion());
                         if (responseCount >= 1) init();
                         else responseCount++;
+
                     }
                 }
             }
@@ -243,53 +215,22 @@ public class MainActivity extends BaseActivity {
 
     // 뷰 초기화 및 보여주기
     private void init() {
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        textTitle.setText(detail.getName());
+
+        // 마커 표시
         placeLat = detail.getLat();
         placeLon = detail.getLon();
-
         tMapView = new TMapView(this);
         tMapView.setSKTMapApiKey(TmapapiKey);
         tMapView.setCenterPoint(placeLon, placeLat);
-
         placePoint = new TMapPoint(placeLat, placeLon);
         placeMarker = new TMapMarkerItem();
         placeMarker.setTMapPoint(placePoint);
-
-
-        //placeMarker.setName("현위치");
-      //  placeMarker.setVisible(TMapMarkerItem.VISIBLE);
-        //tMarker.setIcon(BitmapFactory.decodeResource(getResources(),R.drawable.map_pin_red));
-      //  placeMarker.setPosition((float) 0.5, 1);
-
         placeMarker.setCanShowCallout(true);
         placeMarker.setAutoCalloutVisible(true);
         placeMarker.setCalloutTitle(detail.getName());
-
         tMapView.addMarkerItem("placepos", placeMarker);
-
         linearLayoutTmap.addView(tMapView);
-        //tmapData = new TMapData();
-        //tMapPointStart = new TMapPoint(startLat, startLon); // SKT타워(출발지)
-        //tMapPointEnd = new TMapPoint(endLat, endLon); // N서울타워(목적지)\
-
-//        ArrayList<TMapPoint> arrays = new ArrayList<>();
-//        arrays.add(tMapPointStart);
-//        arrays.add(tMapPointEnd);
-//        TMapInfo info = tMapView.getDisplayTMapInfo(arrays);
-        //tMapView.setCenterPoint(info.getTMapPoint().getLongitude(),info.getTMapPoint().getLatitude());
-
-        //tMapView.zoomToSpan(Math.abs(gpsTracker.getLatitude()-startLat), Math.abs(gpsTracker.getLongitude()-startLon));
-
-
-//        double leftLon = Math.min(endLon,startLon);
-//        double leftLat = Math.min(endLat,startLat);
-//        double rightLon = Math.max(endLon,startLon);
-//        double rightLat = Math.max(endLat,startLat);
-
-        //tMapView.zoomToTMapPoint(new TMapPoint(leftLat,leftLon),new TMapPoint(rightLat,rightLon));
-
-        //findPath(TMapPathType.PEDESTRIAN_PATH);
 
         // 현위치
         if (!checkLocationServicesStatus()) showDialogForLocationServiceSetting();
@@ -302,15 +243,10 @@ public class MainActivity extends BaseActivity {
         myMarker.setVisible(TMapMarkerItem.VISIBLE);
         myMarker.setIcon(BitmapFactory.decodeResource(getResources(),R.drawable.i_location));
         myMarker.setPosition((float) 0.5, 1);
-      //tMapView.setCenterPoint(gpsTracker.getLongitude(), gpsTracker.getLatitude());
-
-
-
         tMapView.addMarkerItem("mypos", myMarker);
 
 
-        textTitle.setText(detail.getName());
-
+        // 상세 정보
         addressView.setText(detail.getAddress() + " 지번 : " + detail.getFirstNo() + "-" + detail.getSecondNo());
         telNoView.setText(detail.getTel());
 
@@ -321,8 +257,17 @@ public class MainActivity extends BaseActivity {
             parkFlagView.setVisibility(View.INVISIBLE);
         }
 
-        if (!detail.getAdditionalInfo().equals(""))
-            additionalInfoView.setText(detail.getAdditionalInfo());
+
+        additionalInfoView.setMovementMethod(ScrollingMovementMethod.getInstance());
+        if (!detail.getAdditionalInfo().equals("")) {
+            String[] strs = detail.getAdditionalInfo().split(";");
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i <strs.length ; i++) {
+                sb.append(strs[i]+"\n");
+            }
+            sb.deleteCharAt(sb.length()-1);
+            additionalInfoView.setText(sb.toString());
+        }
         else {
             additionalInfoView.setVisibility(View.INVISIBLE);
             additionalField.setVisibility(View.INVISIBLE);
@@ -334,10 +279,6 @@ public class MainActivity extends BaseActivity {
             descView.setVisibility(View.INVISIBLE);
             descField.setVisibility(View.INVISIBLE);
         }
-
-        nickNameView.setText(review.getUserId());
-        pointView.setText(review.getGrade() + "");
-        commentView.setText(review.getOpinion());
 
         cancelWaitingDialog();
     }

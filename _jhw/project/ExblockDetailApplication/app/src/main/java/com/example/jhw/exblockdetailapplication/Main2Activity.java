@@ -10,7 +10,6 @@ import butterknife.OnClick;
 public class Main2Activity extends BaseActivity {
 
     private String poiId;
-    private double[] preloc = {37.4445394, 126.702133};
 
     @OnClick({R.id.button1,R.id.button2,R.id.button3,R.id.button4})
     void buttonEvents(View v) {
@@ -31,7 +30,6 @@ public class Main2Activity extends BaseActivity {
             default:
                 break;
         }
-        intent.putExtra("preloc",preloc);
         intent.putExtra("poiId",poiId);
         startActivity(intent);
     }
