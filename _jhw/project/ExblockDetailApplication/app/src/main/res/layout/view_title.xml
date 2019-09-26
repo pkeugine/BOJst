@@ -14,7 +14,7 @@
     <TextView
         android:id="@+id/text_title"
         android:textSize="@dimen/title_text_size"
-        android:text="서울식당"
+        android:text=""
         android:layout_toRightOf="@+id/title_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

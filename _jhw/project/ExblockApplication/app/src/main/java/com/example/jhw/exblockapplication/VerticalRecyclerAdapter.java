@@ -141,7 +141,6 @@ public class VerticalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public interface OnClickListener {
         void onItemClick(View view, int position);
-
     }
 
     // for both short and long click
