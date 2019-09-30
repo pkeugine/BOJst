@@ -16,12 +16,15 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.jhw.exblockdetailapplication.actiblock.ActiblockActivity;
+import com.example.jhw.exblockdetailapplication.common.BaseActivity;
+import com.example.jhw.exblockdetailapplication.detail.DetailActivity;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class Main2Activity extends BaseActivity {
 
-    private String poiId;
     private boolean gpsFlag;
     private long mClickTime;
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
@@ -29,30 +32,6 @@ public class Main2Activity extends BaseActivity {
     String[] REQUIRED_PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
 
-
-
-    @OnClick({R.id.button1,R.id.button2,R.id.button3,R.id.button4})
-    void buttonEvents(View v) {
-        Intent intent = new Intent(Main2Activity.this, MainActivity.class);
-        switch (v.getId()) {
-            case R.id.button1:
-                poiId = "6399400";
-                break;
-            case R.id.button2:
-                poiId = "5336789";
-                break;
-            case R.id.button3:
-                poiId = "1272460";
-                break;
-            case R.id.button4:
-                poiId = "4707024";
-                break;
-            default:
-                break;
-        }
-        intent.putExtra("poiId",poiId);
-        startActivity(intent);
-    }
     @OnClick({R.id.button5,R.id.button6})
     void nextActivity(View v) {
         Intent intent;
@@ -66,8 +45,6 @@ public class Main2Activity extends BaseActivity {
                 else {
                     checkRunTimePermission();
                     if(gpsFlag) {
-
-
                         intent = new Intent(Main2Activity.this, ActiblockActivity.class);
                         startActivity(intent);
                     }
@@ -87,9 +64,6 @@ public class Main2Activity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
         ButterKnife.bind(this);
-
-
-
 
 
 

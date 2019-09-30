@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    android:background="#ffadaa">
+    <androidx.cardview.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cardview"
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        card_view:cardUseCompatPadding="true"
+        card_view:contentPadding="16dp">
+        <TextView
+            app:autoSizeTextType="uniform"
+            android:id="@+id/place_name"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="액티블록"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
