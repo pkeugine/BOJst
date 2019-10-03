@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ public class VerticalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     private static class VerticalViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private TextView blockCate;
         private Button addBlock;
         private Button delBlock;
         private RecyclerView mRecyclerView;
@@ -40,10 +42,12 @@ public class VerticalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         VerticalViewHolder(@NonNull View itemView, Context mContext) {
             super(itemView);
+            blockCate = itemView.findViewById(R.id.block_cate);
             addBlock = itemView.findViewById(R.id.add_block);
             delBlock = itemView.findViewById(R.id.del_block);
             if(getAdapterPosition()==0) delBlock.setVisibility(View.GONE);
             mRecyclerView = itemView.findViewById(R.id.horizontal_recycler_view);
+
 
             layoutManager = new LinearLayoutManager(mContext);
             adapter = new HorizontalRecyclerAdapter();
@@ -77,6 +81,8 @@ public class VerticalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         void setData(ArrayList<PoiRepo> list) { adapter.updateList(list); }
         void setPosition(int position) { mRecyclerView.scrollToPosition(position);}
+        void setCate(String cate) { blockCate.setText(cate);}
+
         void setOnItemClickListener(VerticalRecyclerAdapter.OnVerticalClickListener mVclickListener, VerticalRecyclerAdapter.OnHorizontalClickListener mHclickListener) {
             this.mVclickListener = mVclickListener;
             this.mHclickListener = mHclickListener;
@@ -106,15 +112,20 @@ public class VerticalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
                 VerticalViewHolder verticalViewHolder = (VerticalViewHolder) holder;
                 if(position==0) {
                     verticalViewHolder.delBlock.setVisibility(View.GONE);
+                    verticalViewHolder.blockCate.setVisibility(View.GONE);
                     verticalViewHolder.setData(null);
                     break;
                 }
                 if(verticalViewHolder.delBlock.getVisibility()==View.GONE) {
-                    if(position!=0) verticalViewHolder.delBlock.setVisibility(View.VISIBLE);
+                    if(position!=0) {
+                        verticalViewHolder.delBlock.setVisibility(View.VISIBLE);
+                        verticalViewHolder.blockCate.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 verticalViewHolder.setData(mList.get(position).getPoiList()); // 수평 데이터를 set
                 verticalViewHolder.setPosition(mList.get(position).gethIndex());
+                verticalViewHolder.setCate(mList.get(position).getSecondCategory());
                 // 확정 버튼 필요?
                 break;
             }

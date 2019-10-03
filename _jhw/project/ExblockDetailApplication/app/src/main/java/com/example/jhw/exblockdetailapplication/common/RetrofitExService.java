@@ -16,6 +16,8 @@ public interface RetrofitExService {
     // http 통신
     String Tmap_URL = "https://apis.openapi.sk.com";
     String DB_URL = "http://192.168.1.239:8000";
+
+
     @GET("/tmap/pois/{poiId}")
     Call<Detail> getDetailData(@Path("poiId") String poiId, @Query("version") int version, @Query("appKey") String appKey);
 

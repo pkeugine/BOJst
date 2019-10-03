@@ -141,11 +141,17 @@ public class ActiblockActivity extends BaseActivity {
                 .build();
         RetrofitExService retrofitExService = retrofit.create(RetrofitExService.class);
 
-        Call<JsonObject> call = retrofitExService.getPOIData(1, 1, 20, category, gpsTracker.getLongitude(), gpsTracker.getLatitude(), 10, TmapapiKey);
+        Call<JsonObject> call = retrofitExService.getPOIData(1, 1, 20, category, gpsTracker.getLongitude(), gpsTracker.getLatitude(), 33, TmapapiKey);
+        Log.d("tag", "getPOI: "+call.request().toString());
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
+                    if(response.body()==null) {
+                        responseCount++;
+                        return;
+                    }
+
                     JsonObject searchPoiInfo = response.body();
                     JsonArray poiList = searchPoiInfo.get("searchPoiInfo").getAsJsonObject().get("pois").getAsJsonObject().get("poi").getAsJsonArray();
                     ArrayList<PoiRepo> poiArray = new ArrayList<>();
@@ -168,6 +174,7 @@ public class ActiblockActivity extends BaseActivity {
                         if(category.equals("숙박") && (placeName.contains("호텔") || placeName.contains("HOTEL"))) continue;
                         if(category.equals("놀거리") && placeName.contains("노래")) continue;
                         poiArray.add(new PoiRepo(poiId, placeName, telNo, address.toString(), lat, lon));
+                        if(poiArray.size()>=10) break;
                     }
 
                     horizontalList[index].put(category, new HorizonRepo(index,category,poiArray));

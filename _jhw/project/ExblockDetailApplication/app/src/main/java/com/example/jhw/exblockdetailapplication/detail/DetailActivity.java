@@ -44,6 +44,8 @@ public class DetailActivity extends BaseActivity {
     TextView textTitle;
     @BindView(R.id.address)
     TextView addressView;
+    @BindView(R.id.address_num)
+    TextView addressNumView;
     @BindView(R.id.tel_no)
     TextView telNoView;
     @BindView(R.id.park_flag)
@@ -52,12 +54,14 @@ public class DetailActivity extends BaseActivity {
     TextView additionalInfoView;
     @BindView(R.id.desc)
     TextView descView;
+    @BindView(R.id.tel_field)
+    LinearLayout telField;
     @BindView(R.id.park_field)
-    TextView parkField;
+    LinearLayout parkField;
     @BindView(R.id.additional_field)
-    TextView additionalField;
+    LinearLayout additionalField;
     @BindView(R.id.desc_field)
-    TextView descField;
+    LinearLayout descField;
     @BindView(R.id.nick_name)
     TextView nickNameView;
     @BindView(R.id.point)
@@ -69,6 +73,9 @@ public class DetailActivity extends BaseActivity {
     Button addReview;
     @BindView(R.id.more_reviews)
     Button moreReviews;
+    @BindView(R.id.confirm)
+    Button confirmButton;
+
 
     // 뒤로가기 버튼
     @OnClick(R.id.title_back)
@@ -92,7 +99,7 @@ public class DetailActivity extends BaseActivity {
         arrays.add(myPoint);
         arrays.add(placePoint);
         TMapInfo info = tMapView.getDisplayTMapInfo(arrays);
-        Log.d("result", "info : "+info.getTMapZoomLevel()+","+tMapView.getZoomLevel());
+        Log.d("result", "info : " + info.getTMapZoomLevel() + "," + tMapView.getZoomLevel());
         tMapView.setZoomLevel(info.getTMapZoomLevel());
         tMapView.setCenterPoint(gpsTracker.getLongitude(), gpsTracker.getLatitude());
     }
@@ -107,13 +114,16 @@ public class DetailActivity extends BaseActivity {
     private TMapMarkerItem myMarker;
 
     private String TmapapiKey;
+
     private String poiId;
+    private String addressName;
 
     private double placeLat;
     private double placeLon;
     private Detail.PoiDetailInfo detail;
     private Review review;
     private int responseCount;
+    private int mposition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,8 +136,12 @@ public class DetailActivity extends BaseActivity {
         // 이전 액티비티에서 넘어온 정보 받아오기
         Intent intent = this.getIntent();
         if (intent != null) {
-            if (intent.getStringExtra("poiId") != null) {
+            if (intent.getIntExtra("position", 0) != 0) {
+                mposition = intent.getIntExtra("position", 0);
+            }
+            if (intent.getStringExtra("poiId") != null && intent.getStringExtra("addressname") != null) {
                 poiId = intent.getStringExtra("poiId");
+                addressName = intent.getStringExtra("addressname");
             } else {
                 Log.e("getData error", "======================================");
                 onBackPressed();
@@ -232,44 +246,61 @@ public class DetailActivity extends BaseActivity {
         myMarker.setTMapPoint(myPoint);
         myMarker.setName("현위치");
         myMarker.setVisible(TMapMarkerItem.VISIBLE);
-        myMarker.setIcon(BitmapFactory.decodeResource(getResources(),R.drawable.i_location));
+        myMarker.setIcon(BitmapFactory.decodeResource(getResources(), R.drawable.i_location));
         myMarker.setPosition((float) 0.5, 1);
         tMapView.addMarkerItem("mypos", myMarker);
 
 
         // 상세 정보
-        addressView.setText(detail.getAddress() + " 지번 : " + detail.getFirstNo() + "-" + detail.getSecondNo());
-        telNoView.setText(detail.getTel());
+        addressView.setText(addressName);
+        addressNumView.setText(detail.getFirstNo() + "-" + detail.getSecondNo());
+        if (!detail.getTel().equals("")) {
+            telNoView.setText(detail.getTel());
+        } else {
+            telField.setVisibility(View.GONE);
+//            telNoView.setVisibility(View.GONE);
+
+        }
+
 
         if (detail.getParkFlag().equals("1")) parkFlagView.setText("가능");
         else if (detail.getParkFlag().equals("0")) parkFlagView.setText("불가능");
         else {
-            parkField.setVisibility(View.INVISIBLE);
-            parkFlagView.setVisibility(View.INVISIBLE);
+            parkField.setVisibility(View.GONE);
+//            parkFlagView.setVisibility(View.GONE);
         }
-
 
         additionalInfoView.setMovementMethod(ScrollingMovementMethod.getInstance());
         if (!detail.getAdditionalInfo().equals("")) {
             String[] strs = detail.getAdditionalInfo().split(";");
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i <strs.length ; i++) {
-                sb.append(strs[i]+"\n");
+            for (int i = 0; i < strs.length; i++) {
+                sb.append(strs[i] + "\n");
             }
-            sb.deleteCharAt(sb.length()-1);
+            sb.deleteCharAt(sb.length() - 1);
             additionalInfoView.setText(sb.toString());
-        }
-        else {
-            additionalInfoView.setVisibility(View.INVISIBLE);
-            additionalField.setVisibility(View.INVISIBLE);
+        } else {
+//            additionalInfoView.setVisibility(View.GONE);
+            additionalField.setVisibility(View.GONE);
         }
 
         descView.setMovementMethod(ScrollingMovementMethod.getInstance());
         if (!detail.getDesc().equals("")) descView.setText(detail.getDesc());
         else {
-            descView.setVisibility(View.INVISIBLE);
-            descField.setVisibility(View.INVISIBLE);
+//            descView.setVisibility(View.GONE);
+            descField.setVisibility(View.GONE);
         }
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("returnPos", mposition);
+                setResult(RESULT_OK,resultIntent);
+                finish();
+            }
+        });
+
 
         cancelWaitingDialog();
     }

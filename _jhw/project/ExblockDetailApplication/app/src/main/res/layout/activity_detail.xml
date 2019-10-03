@@ -16,20 +16,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="7"
+        android:weightSum="10"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp">
         <LinearLayout
             android:id="@+id/linearLayoutTmap"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="0dp"
             android:layout_weight="3"
             android:orientation="horizontal"
             android:layout_marginTop="15dp"
             android:padding="0dp"/>
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_weight="1">
             <Button
                 android:id="@+id/path_search"
@@ -46,7 +46,7 @@
         </RelativeLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="vertical"
             android:layout_weight="3"
             android:layout_marginTop="15dp">
@@ -56,7 +56,7 @@
                 <TextView
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
-                    android:text="주소 "
+                    android:text="주소"
                     android:textStyle="bold"
                     android:textSize="18dp"/>
                 <TextView
@@ -70,7 +70,22 @@
                 <TextView
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
-                    android:text="전화번호 "
+                    android:text="지번"
+                    android:textStyle="bold"
+                    android:textSize="18dp"/>
+                <TextView
+                    android:id="@+id/address_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/tel_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:text="전화번호"
                     android:textStyle="bold"
                     android:textSize="18dp"/>
                 <TextView
@@ -79,13 +94,13 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/park_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:id="@+id/park_field"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
-                    android:text="주차 "
+                    android:text="주차"
                     android:textStyle="bold"
                     android:textSize="18dp"/>
                 <TextView
@@ -94,13 +109,13 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/additional_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:id="@+id/additional_field"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
-                    android:text="부가정보 "
+                    android:text="부가정보"
                     android:textStyle="bold"
                     android:textSize="18dp"/>
                 <TextView
@@ -112,13 +127,13 @@
                     android:scrollbars="vertical"/>
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/desc_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:id="@+id/desc_field"
                     android:layout_width="70dp"
                     android:layout_height="wrap_content"
-                    android:text="소개 "
+                    android:text="소개"
                     android:textStyle="bold"
                     android:textSize="18dp"/>
                 <TextView
@@ -129,12 +144,19 @@
                     android:maxLines="3"
                     android:scrollbars="vertical"/>
             </LinearLayout>
+            <Button
+                android:id="@+id/confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="확정"/>
+
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="vertical"
-            android:layout_weight="3"
+            android:layout_weight="0"
             android:layout_marginTop="15dp">
             <TextView
                 android:layout_width="wrap_content"
