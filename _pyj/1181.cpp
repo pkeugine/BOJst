@@ -13,7 +13,7 @@ bool comp(const string& s1, const string& s2) {
 int main() {
   vector<string> v;
   int n;
-  
+ 
   cin >> n;
 
   string str;
