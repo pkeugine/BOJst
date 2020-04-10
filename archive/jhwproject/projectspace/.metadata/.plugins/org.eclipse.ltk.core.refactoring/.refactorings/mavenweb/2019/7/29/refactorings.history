@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Copy element &apos;insert.jsp&apos; to &apos;insert.jsp&apos;&#x0D;&#x0A;- Original project: &apos;mavenweb&apos;&#x0D;&#x0A;- Destination element: &apos;insert.jsp&apos;&#x0D;&#x0A;- Original element: &apos;insert.jsp&apos;" description="Copy file" element1="src/main/webapp/insert.jsp" files="1" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1563178983981" target="/mavenweb/src/main/webapp/insert.jsp" units="0" version="1.0"/>
-</session>
