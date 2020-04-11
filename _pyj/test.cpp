@@ -3,6 +3,7 @@
 #include <cstring>
 #include <vector>
 using namespace std;
+//test ubuntu
 
 #define MAX 100001
 
