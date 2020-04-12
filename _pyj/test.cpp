@@ -3,20 +3,7 @@
 #include <cstring>
 #include <vector>
 using namespace std;
-//test ubuntu
-12  5
-12	9
-12	    3
-12	    3
-12          3
-if(int i=0; i<5; i++) {     hello
-    return value;           hello
-  d     ajkah       hkaf    hello
-    hihi                    jkjk
-  hihi                      hihi
- hihi                       hihi
-ahah                        hihi
-}
+
 #define MAX 100001
 
 int N;
@@ -77,7 +64,7 @@ int main() {
     for(int i=2; i<=N; i++) {
         if(dist[i] > dist[start]) start=i;
     }
-    
+
     BFS(start);
     
     int ans = dist[i];
