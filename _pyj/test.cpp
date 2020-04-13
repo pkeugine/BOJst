@@ -23,8 +23,7 @@ void BFS(int start) {
     
     while(!q.empty()) {
         int node = q.front();
-        q.pop();
-        
+        q.pop(); 
         for(int i=0; i<a[node].size(); i++) {
             int next_node = a[node][i].first;
             if(chk[next_node] == false) {
