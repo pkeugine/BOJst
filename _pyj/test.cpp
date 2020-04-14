@@ -15,7 +15,7 @@ vector<pair<int,int> > a[MAX];
 void BFS(int start) {
     fill(chk, chk+MAX, false);
     fill(dist, dist+MAX, 0);
-    
+
     queue<int> q;
     
     chk[start] = true;
