@@ -5,7 +5,7 @@
 using namespace std;
 
 #define MAX 100001
-//
+//saving
 
 int N;
 int ans;
